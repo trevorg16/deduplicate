@@ -26,6 +26,9 @@ duplicate_finder.o: duplicate_finder.cc
 ui.o: ui.cc
 	$(CC) $(CC_OPTS) -c $< -o $@
 
+ui_loading.cc: ui_loading.o
+	$(CC) $(CC_OPTS) -c $< -o $@
+
 $(TARGET): $(OBJ)
 	$(CC) $(CC_OPTS) $(OBJ) $(DEDUP_LIBS) -o $@
 
