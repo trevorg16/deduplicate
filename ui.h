@@ -2,10 +2,11 @@
 #define UI_HH
 
 #include "duplicate_finder.h"
+#include "ui_loading.h"
 #include <curses.h>
 #include <mutex>
 
-const int MaxPathLen = 256;
+// const int MaxPathLen = 256;
 
 enum UiScreenStates
 {
@@ -44,66 +45,67 @@ struct UILocation {
 //         }
 // };
 
-struct UIState
-{
-    UIState() :
-        ui_screen(UiScreenStates_Main),
-        nlines(0),
-        ncols(0),
-        currently_running(true),
-        loadingWindow(NULL),
-        x_scroll(0),
-        top_line({}),
-        bottom_line({}),
-        select_line({})
-    {
-    }
+// struct UIState
+// {
+//     UIState() :
+//         ui_screen(UiScreenStates_Main),
+//         // nlines(0),
+//         // ncols(0),
+//         // currently_running(true),
+//         loadingWindow(NULL),
+//         x_scroll(0),
+//         top_line({}),
+//         bottom_line({}),
+//         select_line({})
+//     {
+//     }
 
-    uint8_t ui_screen;
-    int nlines;
-    int ncols;
-    bool currently_running;
-    // WINDOW* ui_windows[UiScreenNumStates];
-    WINDOW* loadingWindow;
-    int x_scroll;
-    UILocation top_line;
-    UILocation bottom_line;
-    UILocation select_line;
-};
+//     uint8_t ui_screen;
+//     // int nlines;
+//     // int ncols;
+//     // bool currently_running;
+//     // WINDOW* ui_windows[UiScreenNumStates];
+//     WINDOW* loadingWindow;
+//     int x_scroll;
+//     UILocation top_line;
+//     UILocation bottom_line;
+//     UILocation select_line;
+// };
 
 class UI
 {
     public:
+
     UI();
 
-    bool init();
+    void init();
 
-    void drawScreen();
-
-    bool run();
+    void run();
 
     void finderComplete(const DuplicateFinder* finder);
 
     void updatePath(const char* p);
 
-    void runLoading();
-
-    void drawScreenMain();
-
-    void drawLoadingPath(int line, int lineWidth);
-
     private:
 
+    void drawScreenMain();
+    void drawScreen();
 
     // Move to class storing bath and duplicate info
-    char path[MaxPathLen + 1];
-    bool pathWaiting;
-    std::mutex pathMutex;
 
     const DuplicateFinder* duplicateFinder;
     std::mutex duplicateFinderMutex;
 
-    UIState uiState;
+    bool running;
+
+    uint8_t ui_screen;
+
+    int x_scroll;
+    UILocation top_line;
+    UILocation bottom_line;
+    UILocation select_line;
+
+    UILoading loading;
 };
 
 #endif /*UI_HH */

@@ -1,7 +1,7 @@
 CC=clang++
 CC_OPTS=-pthread -std=c++11 -Wall -Wextra -g
 
-OBJ=main.o arg_parser.o file_info_key.o file_list.o duplicate_finder.o ui.o
+OBJ=main.o arg_parser.o file_info_key.o file_list.o duplicate_finder.o ui.o ui_loading.o
 DEDUP_LIBS=-lcrypto -lncurses
 
 TARGET=deduplicate
@@ -26,7 +26,7 @@ duplicate_finder.o: duplicate_finder.cc
 ui.o: ui.cc
 	$(CC) $(CC_OPTS) -c $< -o $@
 
-ui_loading.cc: ui_loading.o
+ui_loading.o: ui_loading.cc
 	$(CC) $(CC_OPTS) -c $< -o $@
 
 $(TARGET): $(OBJ)
