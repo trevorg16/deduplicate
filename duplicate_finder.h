@@ -8,6 +8,7 @@
 #include <map>
 #include <thread>
 #include "file_list.h"
+// #include "ui.h"
 
 typedef std::vector<std::string> FilenameList;
 // typedef std::unordered_map<FileInfoKey, FilenameList, FileInfoKeyHash, FileInfoKeyEqual> PathUnorderedMap;
@@ -26,10 +27,13 @@ class DuplicateFinder
     public:
         DuplicateFinder(const char* p, const off_t min, const off_t maxHeader, const off_t maxTail, bool skipMiddle, UI* ui);
         void join();
+        PathMap* getFileMap();
 
     private:
         void getFileHash(const char* filename, const off_t fileSize);
         void addToVectorHashMap(FileInfoKey fileInfo, const char* path);
+
+        void keepOnlyDuplicates();
         
         static void findDuplicates(DuplicateFinder* finder);
 

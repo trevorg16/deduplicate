@@ -2,6 +2,7 @@
 #define UI_LOADING_HH
 
 #include <mutex>
+#include <atomic>
 #include <curses.h>
 
 const int MaxPathLen = 256;
@@ -23,7 +24,7 @@ class UILoading
         unsigned int ui_window_lines;
         unsigned int ui_window_cols;
 
-        bool running;
+        std::atomic<bool> running;
 
         WINDOW* window;
 

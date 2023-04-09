@@ -2,9 +2,11 @@
 #define UI_HH
 
 #include "duplicate_finder.h"
-#include "ui_loading.h"
 #include <curses.h>
 #include <mutex>
+
+#include "ui_loading.h"
+#include "ui_data.h"
 
 // const int MaxPathLen = 256;
 
@@ -16,12 +18,6 @@ enum UiScreenStates
 };
 
 const int UiScreenNumStates = 3;
-
-struct UILocation {
-    public:
-        FileInfoKey mainEntry;
-        FilenameList::size_type subEntry;
-};
 
 // class ui_location {
 //     public:
@@ -78,11 +74,13 @@ class UI
 
     UI();
 
+    ~UI();
+
     void init();
 
     void run();
 
-    void finderComplete(const DuplicateFinder* finder);
+    void finderComplete(DuplicateFinder* finder);
 
     void updatePath(const char* p);
 
@@ -93,19 +91,15 @@ class UI
 
     // Move to class storing bath and duplicate info
 
-    const DuplicateFinder* duplicateFinder;
+    DuplicateFinder* duplicateFinder;
     std::mutex duplicateFinderMutex;
 
     bool running;
 
     uint8_t ui_screen;
 
-    int x_scroll;
-    UILocation top_line;
-    UILocation bottom_line;
-    UILocation select_line;
-
-    UILoading loading;
+    UILoading loadingScreen;
+    UIData    dataScreen;
 };
 
 #endif /*UI_HH */

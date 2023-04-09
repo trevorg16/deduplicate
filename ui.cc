@@ -6,17 +6,20 @@
 
 #define mvaddstrfill(y, x, l, s) mvaddstr(y, x, s); printw("%*s", l - strlen(s), "")
 
-UI::UI() : 
+UI::UI() :
     duplicateFinder(NULL),
     duplicateFinderMutex(),
     running(true),
-    ui_screen(UiScreenStates_Main | UiScreenStates_Loading),
-    x_scroll(0),
-    top_line({}),
-    bottom_line({}),
-    select_line({})
+    ui_screen(UiScreenStates_Main | UiScreenStates_Loading)
 {
     init();
+}
+
+UI::~UI()
+{
+    loadingScreen.destroy();
+    dataScreen.destroy();
+    endwin();
 }
 
 void UI::init()
@@ -44,44 +47,58 @@ void UI::drawScreenMain()
 
 void UI::drawScreen()
 {
+    int nlines = 0;
+    int ncols = 0;
+
+    getmaxyx(stdscr, nlines, ncols);
+
+    duplicateFinderMutex.lock();
+
+    if (!(ui_screen & UiScreenStates_Data) && duplicateFinder != NULL)
+    {
+        ui_screen = UiScreenStates_Main | UiScreenStates_Data;
+
+        dataScreen.updateData(duplicateFinder->getFileMap());
+    }
+
+    duplicateFinderMutex.unlock();
+    
     drawScreenMain();
 
     if (ui_screen & UiScreenStates_Loading)
     {
-        int nlines = 0;
-        int ncols = 0;
-
-        getmaxyx(stdscr, nlines, ncols);
-        loading.create(nlines, ncols);
-        loading.draw();
+        loadingScreen.create(nlines, ncols);
+        loadingScreen.draw();
     }
-    else if(true)
+    else if(ui_screen & UiScreenStates_Data)
     {
-
+        dataScreen.create(nlines, ncols);
+        dataScreen.draw();
     }
 }
 
 void UI::run()
 {
-    while(running)
+    while(running && !dataScreen.didQuit())
     {
         clear();
-        
 
         drawScreen();
     }
 }
 
-void UI::finderComplete(const DuplicateFinder* finder)
+void UI::finderComplete(DuplicateFinder* finder)
 {
     duplicateFinderMutex.lock();
 
     duplicateFinder = finder;
 
     duplicateFinderMutex.unlock();
+
+    loadingScreen.stop();
 }
 
 void UI::updatePath(const char* p)
 {
-    loading.updatePath(p);
+    loadingScreen.updatePath(p);
 }

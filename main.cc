@@ -4,6 +4,16 @@
 #include "duplicate_finder.h"
 #include "ui.h"
 
+// class UI
+// {
+//     public:
+//     void run()
+//     {
+
+//     };
+// };
+
+
 void usage(char* progName);
 
 int main(int argc, char* argv[])

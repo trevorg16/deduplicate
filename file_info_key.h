@@ -16,6 +16,7 @@ class FileInfoKey
 {    
     public:
         static bool lessThan(const FileInfoKey& lhs, const FileInfoKey& rhs);
+        static bool greaterThan(const FileInfoKey& lhs, const FileInfoKey& rhs);
 
         Md5_Dat md5;
         off_t file_size;

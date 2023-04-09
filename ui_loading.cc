@@ -10,6 +10,7 @@
 
 UILoading::UILoading() : 
     // running(true),
+    window(NULL),
     pathWaiting(false),
     pathMutex()
 {
@@ -38,6 +39,7 @@ void UILoading::destroy()
     if (window)
     {
         delwin(window);
+        window = NULL;
     }
 }
 
@@ -68,7 +70,7 @@ void UILoading::draw()
 
     bool resizePending = false;
 
-    while (running && !resizePending) 
+    while (running.load() && !resizePending) 
     {
         //We're currently in the loading screen
         int c = getch();

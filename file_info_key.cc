@@ -19,3 +19,15 @@ bool FileInfoKey::lessThan(const FileInfoKey& lhs, const FileInfoKey& rhs)
 
     return res < 0;
 }
+
+bool FileInfoKey::greaterThan(const FileInfoKey& lhs, const FileInfoKey& rhs)
+{
+    if (lhs.file_size != rhs.file_size)
+    {
+        return lhs.file_size > rhs.file_size;
+    }
+    
+    const int res = memcmp(lhs.md5.data(), rhs.md5.data(), MD5_DIGEST_LENGTH);
+
+    return res > 0; 
+}

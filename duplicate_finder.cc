@@ -28,36 +28,15 @@ void DuplicateFinder::findDuplicates(DuplicateFinder* finder)
     // std::cout << "This is a thread" << std::endl;
     finder->fileList.recurseFiles();
     const PathList& pathList = finder->fileList.getFileList();
+
     for (auto& path : pathList)
     {
-        // std::cout << "File: " << path.first << " size: " << path.second << std::endl;
-        sleep(1);
         finder->getFileHash(path.first.c_str(), path.second);
     }
 
-    // std::cout << "The hash map" << std::endl;
+    finder->keepOnlyDuplicates();
 
-    // for (auto& path : finder->fileMap)
-    // {
-    //     std::cout << path.first.file_size << std::endl;
-
-    //     for (auto& p : path.second)
-    //     {
-    //         std::cout << "\t" << p << std::endl;
-    //     }
-    // }
-
-    // std::cout << "\nBackwards" << std::endl;
-
-    // for (PathMap::reverse_iterator rit = finder->fileMap.rbegin(); rit != finder->fileMap.rend(); rit++)
-    // {
-    //     std::cout << rit->first.file_size << std::endl;
-
-    //     for (std::string& p : rit->second)
-    //     {
-    //         std::cout << "\t" << p << std::endl;
-    //     }
-    // }
+    finder->uiMessagePass->finderComplete(finder);
 }
 
 void DuplicateFinder::getFileHash(const char* filename, const off_t fileSize){
@@ -69,7 +48,7 @@ void DuplicateFinder::getFileHash(const char* filename, const off_t fileSize){
     FILE* fp = fopen(filename, "r");
 
     if(fp == NULL){
-        std::cerr << "Could not open: " << filename << std::endl;
+        // std::cerr << "Could not open: " << filename << std::endl;
         return;
     }
 
@@ -109,7 +88,7 @@ void DuplicateFinder::getFileHash(const char* filename, const off_t fileSize){
         }
 
         if(readSz == 0 /*|| feof(fp) == 0*/){
-            std::cerr << "Did not hit eof on file" << std::endl;
+            // std::cerr << "Did not hit eof on " << filename << std::endl;
             hadError = true;
         }
     }
@@ -122,7 +101,7 @@ void DuplicateFinder::getFileHash(const char* filename, const off_t fileSize){
         }
 
         if(feof(fp) == 0){
-            std::cerr << "Could not read: " << filename << std::endl;
+            // std::cerr << "Could not read: " << filename << std::endl;
             hadError = true;
         }
     }
@@ -155,9 +134,29 @@ void DuplicateFinder::addToVectorHashMap(FileInfoKey fileInfo, const char* path)
     }
 }
 
+void DuplicateFinder::keepOnlyDuplicates()
+{
+    auto it = fileMap.begin();
+
+    while (it != fileMap.end())
+    {
+        if (it->second.size() < 2)
+        {
+            fileMap.erase(it++);
+        }
+        else
+        {
+            ++it;
+        }
+    }
+}
 
 void DuplicateFinder::join()
 {
     worker.join();
 }
 
+PathMap* DuplicateFinder::getFileMap()
+{
+    return &fileMap;
+}
