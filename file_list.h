@@ -13,7 +13,6 @@
 typedef std::pair<std::string, const off_t> FileInfo;
 typedef std::vector<FileInfo> PathList;
 
-
 // Contains all logic related to building a map of duplicate file in the file system
 class FileList
 {
@@ -27,7 +26,7 @@ class FileList
         void addFileToPathList(const char* filePath, unsigned char dtype);
         static bool concatPath(const char* basePath, const char* filePath, char* concatenatedPath, long maxPathLength);
 
-        // PathUnorderedMap fileHashMap; // Move this to something specific to the map, then keep the list local here
+
         PathList fileList;
         off_t minSize;
         const char* path;

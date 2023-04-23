@@ -10,7 +10,6 @@
 
 typedef std::array<uint8_t, MD5_DIGEST_LENGTH> Md5_Dat;
 
-
 // Key elements to be used in an unordered_map
 class FileInfoKey
 {    

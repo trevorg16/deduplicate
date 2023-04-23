@@ -9,15 +9,8 @@
 
 #include "duplicate_finder.h"
 
-// struct UILocation {
-//     public:
-//         FileInfoKey mainEntry;
-//         FilenameList::size_type subEntry;
-// };
-
 struct UILocation
 {
-    // PathMap::iterator mainEntry;
     PathMap::reverse_iterator mainEntry;
     FilenameList::size_type subEntry;
 
@@ -42,17 +35,7 @@ struct UILocation
             return this->subEntry < b.subEntry;
         }
     }
-
-    // bool operator== (const UILocation &b)
-    // {
-    //     return this->mainEntry == b.mainEntry && this->subEntry == b.subEntry;
-    // }
 };
-// struct UILocation
-// {
-// PathMap::iterator mainEntry;
-// FilenameList::size_type subEntry;
-// };
 
 class UIData
 {

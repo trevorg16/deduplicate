@@ -4,15 +4,6 @@
 #include "duplicate_finder.h"
 #include "ui.h"
 
-// class UI
-// {
-//     public:
-//     void run()
-//     {
-
-//     };
-// };
-
 
 void usage(char* progName);
 
@@ -24,7 +15,7 @@ int main(int argc, char* argv[])
     if (parser.getResult() == RunDedup)
     {
         UI ui;
-        DuplicateFinder duplicateFinder(parser.getPath(), parser.getMinSize(), 100, 100, true, &ui);
+        DuplicateFinder duplicateFinder(parser.getPath(), parser.getMinSize(), 10 * KB_PER_MB * BYTES_PER_KB, 10 * KB_PER_MB * BYTES_PER_KB, true, &ui);
 
         ui.run();
 
@@ -45,6 +36,7 @@ int main(int argc, char* argv[])
 
 void usage(char* progname)
 {
+    std::cerr << progname << " - find duplicated files in the specified directory by scanning the first and last 10MB of the file" << std::endl;
     std::cerr << "Usage:" << std::endl;
     std::cerr << progname << " [Options] Path" << std::endl;
     std::cerr << std::endl;

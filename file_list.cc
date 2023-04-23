@@ -11,13 +11,14 @@
 
 #include "file_list.h"
 
+const long MAXIMUM_PATH_LENGTH = 256;
+
 FileList::FileList(const char* p, const off_t min) : minSize(min), path(p)
 {
 }
 
 void FileList::recurseFiles()
 {
-    // std::cout << "Running the recuseFiles function on " << path << std::endl;
     const long maximumPathLength = pathconf(path, _PC_PATH_MAX);
     localFileTreeWalk(path, maximumPathLength);
 }
@@ -32,6 +33,8 @@ void FileList::localFileTreeWalk(const char *path, long maximumPathLength)
     DIR *dir;
     struct dirent* entry;
 
+    char next_path[MAXIMUM_PATH_LENGTH + 1] = {};
+
     if(!(dir = opendir(path))){
         return;
     }
@@ -44,22 +47,15 @@ void FileList::localFileTreeWalk(const char *path, long maximumPathLength)
                 //Skip this one
             }
             else if (entry->d_type == DT_DIR){
-                char subfolder_path[maximumPathLength]; // TODO: Fix this VLA
-                concatPath(path, entry->d_name, subfolder_path, maximumPathLength);
+                concatPath(path, entry->d_name, next_path, std::min(maximumPathLength, MAXIMUM_PATH_LENGTH));
 
                 const long newPathLength = maximumPathLength - strlen(entry->d_name);
-                localFileTreeWalk(subfolder_path, newPathLength);
+                localFileTreeWalk(next_path, newPathLength);
             }
             else
             {
-                // int maximumPathLength = pathconf(path, _PC_PATH_MAX);
-                char file_path[maximumPathLength];
-                concatPath(path, entry->d_name, file_path, maximumPathLength);
-                addFileToPathList(file_path, entry->d_type);
-                // struct stat sb = {};
-                // if(stat(file_path, &sb) == 0){
-                //     get_file_info(file_path, entry.d_type, path_size_list);
-                // }
+                concatPath(path, entry->d_name, next_path, std::min(maximumPathLength, MAXIMUM_PATH_LENGTH));
+                addFileToPathList(next_path, entry->d_type);
             }
         }
     } while (entry);
@@ -78,7 +74,7 @@ void FileList::addFileToPathList(const char* filePath, unsigned char dtype)
 
     if (stat(filePath, &sb) != 0)
     {
-        std::cerr << "failed to process file: " << filePath << " errno: " << errno << std::endl;
+        // failed to process file
         return;
     }
 
@@ -89,17 +85,6 @@ void FileList::addFileToPathList(const char* filePath, unsigned char dtype)
         const FileInfo info = {std::string(filePath), fSize};
 
         fileList.push_back(info);
-        // file_count++;
-
-        // FileInfoKey file_info;
-
-        // unsigned char out[MD5_DIGEST_LENGTH];
-        // memset(&out, 0x00, MD5_DIGEST_LENGTH);
-        // std::copy(std::begin(out), std::end(out), std::begin(file_info.md5));
-        // file_info.file_size = fSize;
-
-        // addToVectorHashMap(hash_map, file_info, pathname);
-
     }
 }
 

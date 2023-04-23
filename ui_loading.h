@@ -19,8 +19,6 @@ class UILoading
         void drawLoadingPath(int line, int lineWidth);
         void updatePath(const char* p);
     private:
-        // int width;
-        // int height;
         unsigned int ui_window_lines;
         unsigned int ui_window_cols;
 

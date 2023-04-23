@@ -25,7 +25,6 @@ DuplicateFinder::DuplicateFinder(const char* p,  const off_t min, const off_t ma
 
 void DuplicateFinder::findDuplicates(DuplicateFinder* finder)
 {
-    // std::cout << "This is a thread" << std::endl;
     finder->fileList.recurseFiles();
     const PathList& pathList = finder->fileList.getFileList();
 
@@ -47,8 +46,8 @@ void DuplicateFinder::getFileHash(const char* filename, const off_t fileSize){
 
     FILE* fp = fopen(filename, "r");
 
-    if(fp == NULL){
-        // std::cerr << "Could not open: " << filename << std::endl;
+    if(fp == NULL)
+    {
         return;
     }
 
@@ -62,10 +61,11 @@ void DuplicateFinder::getFileHash(const char* filename, const off_t fileSize){
 
     MD5_Init(&c);
 
-    if( skipMiddle && (fileSize > (maxHeader + maxTail))){
+    if( skipMiddle && (fileSize > (maxHeader + maxTail)))
+    {
         // Need to skip the middle
         off_t remainingBytes = maxHeader;
-        size_t readSz;
+        size_t readSz = 0;
         
         while(remainingBytes > 0 && (readSz = fread(buf, sizeof(char), std::min(static_cast<off_t>(MD5_BUF_LEN), remainingBytes), fp)) > 0){
             remainingBytes -= readSz;

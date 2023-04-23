@@ -3,7 +3,7 @@
 #include <iterator>
 #include <iostream>
 
-#define HEADER_SIZE_Y (2)
+#define HEADER_SIZE_Y (1)
 #define HEADER_SIZE_X (0)
 
 #define WINDOW_BORDER_SIZE (1)
@@ -76,17 +76,6 @@ void UIData::scrollUp()
 void UIData::shiftDown(UILocation& location)
 {
     std::reverse_iterator<PathMap::iterator>& entry = location.mainEntry;
-
-    // if (entry.second.size() > 0 &&
-    //     location.subEntry < (entry.second.size() - 1))
-    // {
-    //     location.subEntry++;
-    // }
-    // else if (location.mainEntry != pathMap->rend())
-    // {
-    //     location.mainEntry++;
-    // }
-
     
     if (entry->second.size() > 0 &&
         location.subEntry < (entry->second.size() - 1))
@@ -97,7 +86,7 @@ void UIData::shiftDown(UILocation& location)
     {
         UILocation newLocation = location;
         newLocation.mainEntry++;
-        
+
         if (newLocation.mainEntry != pathMap->rend())
         {
             newLocation.subEntry = 0;
@@ -129,12 +118,10 @@ void UIData::drawScreen(PathMap* map)
     PathMap::reverse_iterator currentMainEntryIter = top_line.mainEntry;
     FilenameList::size_type current_sub_entry = top_line.subEntry;
 
-    while(currentLine <= windowHeight && currentMainEntryIter != map->rend()){
-        //for(DuplicateFinderPath::FileInfoElement_t& i: *file_data){
-        // DuplicateFinderPath::FileInfoElement_t i = (*(file_data.load()))[current_main_entry];
+    while(currentLine <= windowHeight && currentMainEntryIter != map->rend())
+    {
         const auto& currentMainEntry = *currentMainEntryIter;
 
-        //mvwprintw(data_window, currentLine, WINDOW_BORDER_SIZE,"Size: %d", i.first.file_size);
         char sizeValueToPrint[size_tab_sz + 1];
         byteSizeToStr(currentMainEntry.first.file_size, sizeValueToPrint, size_tab_sz + 1);
         mvwprintw(window, currentLine, WINDOW_BORDER_SIZE,"%s", sizeValueToPrint);
@@ -202,18 +189,6 @@ void UIData::draw()
 
         select_line = top_line;
     }
-
-    // window = ui_state.ui_windows[DATA_NUM];
-    //Examine if we currently have a data WINDOW
-    // if(!window){
-    //     //Create the screen
-        
-    //     data_window = ui_state.ui_windows[DATA_NUM];
-
-    //     //scrollok(data_window, FALSE);
-    // }
-    // else{
-    // }
 
     while(running)
     {
@@ -320,7 +295,7 @@ void UIData::draw()
                 {
                     top_line = select_line;
                 }
-                
+
                 break;
             }
         }

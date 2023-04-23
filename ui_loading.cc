@@ -9,7 +9,6 @@
 #define LOADING_STRING "LOADING"
 
 UILoading::UILoading() : 
-    // running(true),
     window(NULL),
     pathWaiting(false),
     pathMutex()
@@ -61,7 +60,7 @@ void UILoading::draw()
     waddstr(window, "Processing: ");
     wmove(window, loading_line, 1);
     waddstr(window, "Getting list of files to check.");
-    //mvwaddstr(loading_window, 0,0,"");
+
     refresh();
     wrefresh(window);
 
@@ -84,60 +83,6 @@ void UILoading::draw()
             // Load in the current message
             drawLoadingPath(loading_line, load_win_width);
         }
-
-        // ui_message_t loaded_message;
-        // ssize_t readLen = read(messagePipe[0], &loaded_message, sizeof(ui_message_t));
-
-        // if(readLen == -1)
-        // {
-        //     if (errno == EINTR)
-        //     {
-        //         // Assume resize
-        //         reloadPending = true;
-
-        //         continue;
-        //     }
-        //     perror("Failed to read from pipe\n");
-        //     exit(EXIT_FAILURE);
-        // }
-        // else if (readLen < sizeof(ui_message_t))
-        // {
-        //     // Incomplete read, skip
-        //     continue;
-        // }
-        // Good read
-
-        // {
-        //     switch(loaded_message.message_type){
-        //         case UI_MESSAGE_EMPTY:
-        //             break;
-        //         case UI_MESSAGE_TYPE_NEW_PATH:
-        //             {
-        //                 //Draw the new path
-        //                 //Clear the line
-        //                 wmove(loading_window, loading_line, 1);
-        //                 wprintw(loading_window, "%*s", load_win_width - 2, "");
-        //                 wmove(loading_window, loading_line, 1);
-        //                 loaded_message.message[load_win_width - 2] = '\0';
-        //                 waddstr(loading_window, loaded_message.message);
-        //                 wrefresh(loading_window);
-        //             }
-        //             break;
-        //         case UI_MESSAGE_TYPE_RESIZE:
-        //             {
-        //                 getmaxyx(stdscr, ui_state.nlines, ui_state.ncols);
-        //                 reloadPending = true;
-        //             }
-        //             break;
-        //         case UI_MESSAGE_TYPE_LOADING_COMPLETE:
-        //             {
-        //                 ui_state.ui_screen &= ~LOADING;
-        //                 delwin(loading_window);
-        //                 runUI();
-        //             }
-        //             break;
-        //     }
-        // }
     }
 }
 
@@ -157,7 +102,7 @@ void UILoading::drawLoadingPath(int line, int lineWidth)
     {
         wmove(window, line, 1);
         wprintw(window, "%*s", lineWidth - 2, "");
-        
+
         wmove(window, line, 1);
 
         memcpy(truncatedPath, path, sizeof(char) *(lineWidth - 2));

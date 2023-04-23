@@ -4,7 +4,7 @@
 
 #define PROGRAM_NAME "Deduplicator"
 
-#define mvaddstrfill(y, x, l, s) mvaddstr(y, x, s); printw("%*s", l - strlen(s), "")
+#define mvaddstrfill(y, x, l, s) mvaddstr(y, x, s); printw("%*s", static_cast<int>(l - strlen(s)), "")
 
 UI::UI() :
     duplicateFinder(NULL),
@@ -33,16 +33,11 @@ void UI::init()
 
 void UI::drawScreenMain()
 {
-    int nlines;
-    int ncols;
-
-    getmaxyx(stdscr, nlines, ncols);
+    int ncols = getmaxx(stdscr);
 
     attron(A_REVERSE);
     mvaddstrfill(0, 0, ncols, PROGRAM_NAME);
     attroff(A_REVERSE);
-
-    mvprintw(1, 0, "Current screen size: (%d, %d), pid: %d", ncols, nlines, (int)getpid());
 }
 
 void UI::drawScreen()

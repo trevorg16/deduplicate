@@ -5,6 +5,11 @@
 
 #include <sys/types.h>
 
+static const int BYTES_PER_KB = 1024;
+static const int KB_PER_MB    = 1024;
+static const int MB_PER_GB    = 1024;
+static const int GB_PER_TB    = 1024;
+
 enum ArgParserResult
 {
     PrintUsage,
