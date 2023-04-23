@@ -8,4 +8,4 @@ the beginning and end of files to find duplicates.
 # Compiling deduplicate
 
 Simply type `make` to compile deduplicate using the system's default
-C++ compiler
+C++ compiler.
