@@ -23,7 +23,6 @@
 #include <unordered_map>
 #include <iostream>
 #include <algorithm>
-#include <unistd.h> // for sleep, temporary
 
 #include "duplicate_finder.h"
 #include "ui.h"
