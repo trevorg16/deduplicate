@@ -64,15 +64,18 @@ void FileList::localFileTreeWalk(const char *path, long maximumPathLength)
                 //Skip this one
             }
             else if (entry->d_type == DT_DIR){
-                concatPath(path, entry->d_name, next_path, std::min(maximumPathLength, MAXIMUM_PATH_LENGTH));
-
-                const long newPathLength = maximumPathLength - strlen(entry->d_name);
-                localFileTreeWalk(next_path, newPathLength);
+                if(concatPath(path, entry->d_name, next_path, std::min(maximumPathLength, MAXIMUM_PATH_LENGTH)))
+                {
+                    const long newPathLength = maximumPathLength - strlen(entry->d_name);
+                    localFileTreeWalk(next_path, newPathLength);
+                }
             }
             else
             {
-                concatPath(path, entry->d_name, next_path, std::min(maximumPathLength, MAXIMUM_PATH_LENGTH));
-                addFileToPathList(next_path, entry->d_type);
+                if(concatPath(path, entry->d_name, next_path, std::min(maximumPathLength, MAXIMUM_PATH_LENGTH)))
+                {
+                    addFileToPathList(next_path, entry->d_type);
+                }
             }
         }
     } while (entry);
@@ -89,9 +92,15 @@ void FileList::addFileToPathList(const char* filePath, unsigned char dtype)
         return;
     }
 
-    if (stat(filePath, &sb) != 0)
+    if (lstat(filePath, &sb) != 0)
     {
         // failed to process file
+        return;
+    }
+
+    // not a regular file
+    if ((sb.st_mode & S_IFMT) != S_IFREG)
+    {
         return;
     }
 
