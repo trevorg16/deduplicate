@@ -21,6 +21,8 @@
 #define _FILE_OFFSET_BITS 64
 
 #include <sys/types.h>
+#include <vector>
+#include <string>
 
 static const int BYTES_PER_KB = 1024;
 static const int KB_PER_MB    = 1024;
@@ -42,6 +44,7 @@ class ArgParser
         ArgParserResult getResult();
         off_t getMinSize();
         const char* getPath();
+        const std::vector<std::string>& getExcludePaths();
 
     private:
         void setMinSize(char* strSize, off_t defaultBytes);
@@ -49,6 +52,7 @@ class ArgParser
         ArgParserResult result;
         off_t minSize;
         const char* path;
+        std::vector<std::string> excludePaths;
 };
 
 #endif /* ARG_PARSER_H */

@@ -59,6 +59,8 @@ class UI
 
     uint8_t ui_screen;
 
+    bool isEmpty;
+
     UILoading loadingScreen;
     UIData    dataScreen;
 };

@@ -34,7 +34,7 @@ typedef std::vector<FileInfo> PathList;
 class FileList
 {
     public:
-        FileList(const char* p, const off_t min);
+        FileList(const char* p, const off_t min, const std::vector<std::string>& exclude);
 
         void recurseFiles();
         PathList& getFileList();
@@ -42,11 +42,12 @@ class FileList
         void localFileTreeWalk(const char *path, long maximumPathLength);
         void addFileToPathList(const char* filePath, unsigned char dtype);
         static bool concatPath(const char* basePath, const char* filePath, char* concatenatedPath, long maxPathLength);
-
+        bool isInExcludeList(const std::string& path);
 
         PathList fileList;
         off_t minSize;
         const char* path;
+        const std::vector<std::string>& excludePaths;
 };
 
 #endif /* DUPLICATE_MAP_H */

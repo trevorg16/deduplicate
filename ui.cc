@@ -18,6 +18,7 @@
 #include "ui.h"
 #include <signal.h>
 #include <cstring>
+#include <iostream>
 
 #define PROGRAM_NAME "Deduplicator"
 
@@ -37,6 +38,11 @@ UI::~UI()
     loadingScreen.destroy();
     dataScreen.destroy();
     endwin();
+
+    if (isEmpty)
+    {
+        std::cerr << "No duplicate files found matching the specified criteria" << std::endl;
+    }
 }
 
 void UI::init()
@@ -105,9 +111,16 @@ void UI::finderComplete(DuplicateFinder* finder)
 
     duplicateFinder = finder;
 
+    isEmpty = finder->getFileMap()->empty();
+
     duplicateFinderMutex.unlock();
 
     loadingScreen.stop();
+
+    if (isEmpty)
+    {
+        running = false;
+    }
 }
 
 void UI::updatePath(const char* p)

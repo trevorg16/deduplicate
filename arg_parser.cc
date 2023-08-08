@@ -51,18 +51,21 @@ void ArgParser::parse(int argc, char* argv[])
 
     int optsFound = 0;
 
-    while ((opt = getopt(argc, argv, ":m:h")) != -1) {
+    while ((opt = getopt(argc, argv, ":m:h:e:")) != -1) {
         switch (opt) {
             case 'm':
                 optsFound += 2;
                 minSizeString = optarg;//This has an optarg
+                break;
+            case 'e':
+                optsFound += 2;
+                excludePaths.push_back(optarg);
                 break;
             case 'h':
             case '?':
                 result = PrintUsage;
                 return;
             case ':':
-                std::cerr << "Error, missing argument for " << (char)optopt << std::endl;
                 return;
             default:
                 std::cerr << "Error, illegal argument " << (char)optopt << std::endl;
@@ -72,7 +75,7 @@ void ArgParser::parse(int argc, char* argv[])
 
     if (argc < (optsFound + MinNumArgs))
     {
-        std::cerr << "Error -m argument supplied without SIZE or PATH" << std::endl;
+        std::cerr << "Error: arguments supplied incorrectly" << std::endl;
         result = PrintUsageError;
         return;
     }
@@ -99,6 +102,11 @@ off_t ArgParser::getMinSize()
 const char* ArgParser::getPath()
 {
     return path;
+}
+
+const std::vector<std::string>& ArgParser::getExcludePaths()
+{
+    return excludePaths;
 }
 
 void ArgParser::setMinSize(char* strSize, off_t defaultBytes)

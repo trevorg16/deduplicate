@@ -32,7 +32,8 @@ int main(int argc, char* argv[])
     if (parser.getResult() == RunDedup)
     {
         UI ui;
-        DuplicateFinder duplicateFinder(parser.getPath(), parser.getMinSize(), 10 * KB_PER_MB * BYTES_PER_KB, 10 * KB_PER_MB * BYTES_PER_KB, true, &ui);
+        auto exludePaths = parser.getExcludePaths();
+        DuplicateFinder duplicateFinder(parser.getPath(), parser.getMinSize(), parser.getExcludePaths(), 10 * KB_PER_MB * BYTES_PER_KB, 10 * KB_PER_MB * BYTES_PER_KB, true, &ui);
 
         ui.run();
 
@@ -59,5 +60,6 @@ void usage(char* progname)
     std::cerr << std::endl;
     std::cerr << "Options: " << std::endl;
     std::cerr << "\t" << "-m SIZE[SIZE_SUFFIX]\tThe minimum file size to consider for deduplication" << std::endl;
-    std::cerr << "\t" << "SIZE_SUFFIX\tValid suffixes: [KB, MB, GB, TB], default bytes" << std::endl;
+    std::cerr << "\t\t" << "SIZE_SUFFIX\tValid suffixes: [KB, MB, GB, TB], default bytes" << std::endl;
+    std::cerr << "\t" << "{-e excludepath}\tExclude a specific path from the search. Should include the prefix which is supplied as the input path" << std::endl;
 }

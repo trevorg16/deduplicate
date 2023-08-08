@@ -30,7 +30,10 @@
 
 const long MAXIMUM_PATH_LENGTH = 256;
 
-FileList::FileList(const char* p, const off_t min) : minSize(min), path(p)
+FileList::FileList(const char* p, const off_t min, const std::vector<std::string>& exclude) :
+    minSize(min),
+    path(p),
+    excludePaths(exclude)
 {
 }
 
@@ -60,21 +63,30 @@ void FileList::localFileTreeWalk(const char *path, long maximumPathLength)
         entry = readdir(dir);
 
         if(entry){
-            if (entry->d_type == DT_DIR && ( strcmp(".", entry->d_name) == 0 || strcmp("..", entry->d_name) == 0)){
+            if (entry->d_type == DT_DIR && ( strcmp(".", entry->d_name) == 0 || strcmp("..", entry->d_name) == 0))
+            {
                 //Skip this one
             }
-            else if (entry->d_type == DT_DIR){
-                if(concatPath(path, entry->d_name, next_path, std::min(maximumPathLength, MAXIMUM_PATH_LENGTH)))
-                {
-                    const long newPathLength = maximumPathLength - strlen(entry->d_name);
-                    localFileTreeWalk(next_path, newPathLength);
-                }
-            }
-            else
+            else if (entry->d_type == DT_DIR)
             {
                 if(concatPath(path, entry->d_name, next_path, std::min(maximumPathLength, MAXIMUM_PATH_LENGTH)))
                 {
-                    addFileToPathList(next_path, entry->d_type);
+                    const long newPathLength = maximumPathLength - strlen(entry->d_name);
+
+                    if (!isInExcludeList(next_path))
+                    {
+                        localFileTreeWalk(next_path, newPathLength);
+                    }
+                }
+            }
+            else /* File */
+            {
+                if(concatPath(path, entry->d_name, next_path, std::min(maximumPathLength, MAXIMUM_PATH_LENGTH)))
+                {
+                    if (!isInExcludeList(next_path))
+                    {
+                        addFileToPathList(next_path, entry->d_type);
+                    }
                 }
             }
         }
@@ -118,4 +130,20 @@ bool FileList::concatPath(const char* basePath, const char* filePath, char* conc
 {
     size_t written = snprintf(concatenatedPath, maxPathLength, "%s/%s", basePath, filePath);
     return static_cast<long>(written) < maxPathLength;
+}
+
+bool FileList::isInExcludeList(const std::string& path)
+{
+    bool shouldExclude = false;
+
+    for (const std::string& exclude : excludePaths)
+    {
+        if (path.rfind(exclude, 0) == 0)
+        {
+            shouldExclude = true;
+            break;
+        }
+    }
+
+    return shouldExclude;
 }

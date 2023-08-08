@@ -29,8 +29,8 @@
 
 #define MD5_BUF_LEN (8192)
 
-DuplicateFinder::DuplicateFinder(const char* p,  const off_t min, const off_t maxHeader, const off_t maxTail, bool skipMiddle, UI* ui) :
-    fileList(p, min),
+DuplicateFinder::DuplicateFinder(const char* p,  const off_t min, const std::vector<std::string>& exclude, const off_t maxHeader, const off_t maxTail, bool skipMiddle, UI* ui) :
+    fileList(p, min, exclude),
     maxHeader(maxHeader),
     maxTail(maxTail),
     skipMiddle(skipMiddle),
